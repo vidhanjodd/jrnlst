@@ -21,13 +21,16 @@ public class JournalEntryController {
     private JournalEntryService journalEntryService;
 
     @GetMapping
-    public List<JournalEntry> getAll(){
-       return journalEntryService.getAll();
+    public ResponseEntity<?> getAll(){
+       List<JournalEntry> all = journalEntryService.getAll();
+       if(all != null && !all.isEmpty()){
+           return new ResponseEntity<>(all , HttpStatus.FOUND);
+       }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     @PostMapping
     public ResponseEntity<JournalEntry> createEntity(@RequestBody JournalEntry myEntry){
        try {
-           myEntry.setDate(LocalDateTime.now());
            journalEntryService.saveEntry(myEntry);
            return  new ResponseEntity<>(myEntry , HttpStatus.CREATED);
        } catch (Exception e) {
