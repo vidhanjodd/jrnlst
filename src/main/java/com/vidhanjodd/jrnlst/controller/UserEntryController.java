@@ -29,9 +29,16 @@ public class UserEntryController {
     public void createUser(@RequestBody UserEntry userEntry){
         userEntryService.saveEntry(userEntry);
     }
-    @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody UserEntry userEntry){
-
+    @PutMapping("/{userName}")
+    public ResponseEntity<?> updateUser(@RequestBody UserEntry userEntry , @PathVariable String userName){
+        UserEntry userInDB = userEntryService.findByUserName(userName);
+        if(userInDB != null){
+            userInDB.setUsername(userEntry.getUsername());
+            userInDB.setPassword(userEntry.getPassword());
+            userEntryService.saveEntry(userInDB);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 
 }
